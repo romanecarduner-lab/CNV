@@ -327,6 +327,8 @@ const BESOINS = {
 
 const EXERCICES = [
   {
+    famille: "Les distinctions de base",
+    type: "binaire",
     titre: "Fait ou interprétation ?",
     consigne: "Une caméra pourrait-elle le filmer ?",
     choix: ["Un fait", "Une interprétation"],
@@ -336,9 +338,14 @@ const EXERCICES = [
       { phrase: "Tu as laissé trois messages sans réponse.", bonne: 0, mot: "Trois messages se comptent." },
       { phrase: "Tu es toujours en retard.", bonne: 1, mot: "« Toujours » généralise : c'est déjà un jugement." },
       { phrase: "Tu as haussé la voix pendant la réunion.", bonne: 0, mot: "Le volume s'entend." },
+      { phrase: "Elle fait tout pour m'éviter.", bonne: 1, mot: "« Pour » prête une intention. On ne filme pas les intentions." },
+      { phrase: "Il a dit « on verra » et il a changé de sujet.", bonne: 0, mot: "Des mots exacts et un enchaînement observable." },
+      { phrase: "Tu ne fais aucun effort à la maison.", bonne: 1, mot: "« Aucun effort » est une évaluation globale. Que s'est-il passé, précisément, cette semaine ?" },
     ],
   },
   {
+    famille: "Les distinctions de base",
+    type: "binaire",
     titre: "Sentiment ou pensée sur l'autre ?",
     consigne: "Est-ce que ça parle de moi, ou de ce que l'autre m'aurait fait ?",
     choix: ["Un sentiment", "Une pensée sur l'autre"],
@@ -348,9 +355,14 @@ const EXERCICES = [
       { phrase: "Je me sens manipulée.", bonne: 1, mot: "C'est une interprétation. Dessous : peut-être méfiance, colère." },
       { phrase: "Je me sens soulagé.", bonne: 0, mot: "Personne n'est mis en cause." },
       { phrase: "Je me sens incompris.", bonne: 1, mot: "Ça décrit ce que l'autre n'a pas fait. Dessous : découragement, tristesse." },
+      { phrase: "Je suis épuisée.", bonne: 0, mot: "Le corps parle, et lui seul." },
+      { phrase: "Je me sens trahi.", bonne: 1, mot: "Un verdict sur l'autre. Dessous : sans doute de la colère, et beaucoup de tristesse." },
+      { phrase: "Je me sens tendu depuis ce matin.", bonne: 0, mot: "Un état, situé dans le temps, sans coupable." },
     ],
   },
   {
+    famille: "Les distinctions de base",
+    type: "binaire",
     titre: "Besoin ou stratégie ?",
     consigne: "Est-ce que ça pourrait se satisfaire de mille façons différentes ?",
     choix: ["Un besoin", "Une stratégie"],
@@ -360,6 +372,236 @@ const EXERCICES = [
       { phrase: "J'ai besoin de deux semaines de vacances.", bonne: 1, mot: "Le besoin dessous : repos, espace." },
       { phrase: "J'ai besoin de clarté.", bonne: 0, mot: "Aucun nom, aucune action, aucune date." },
       { phrase: "J'ai besoin que tu ranges la cuisine.", bonne: 1, mot: "Le besoin dessous : ordre, équité, peut-être soutien." },
+      { phrase: "J'ai besoin de contribuer à quelque chose qui compte.", bonne: 0, mot: "Universel : n'importe qui pourrait le dire." },
+      { phrase: "J'ai besoin que tu me dises que tu m'aimes.", bonne: 1, mot: "Une formule précise, attendue d'une personne précise. Dessous : sécurité, lien." },
+      { phrase: "J'ai besoin de sécurité.", bonne: 0, mot: "Un besoin nu, qui n'impose rien à personne." },
+    ],
+  },
+  {
+    famille: "Les distinctions de base",
+    type: "binaire",
+    titre: "Demande ou exigence ?",
+    consigne: "Qu'est-ce qui se passerait en moi si l'autre disait non ?",
+    choix: ["Une demande", "Une exigence"],
+    items: [
+      { phrase: "Serais-tu d'accord pour qu'on en reparle jeudi soir ?", bonne: 0, mot: "Concret, daté, et refusable sans drame." },
+      { phrase: "Si tu m'aimais, tu ferais l'effort.", bonne: 1, mot: "Le refus est puni d'avance : il prouverait qu'on n'aime pas." },
+      { phrase: "J'aimerais que tu sois plus attentif.", bonne: 1, mot: "Ni observable ni réalisable : personne ne sait quoi faire de ça." },
+      { phrase: "Est-ce que tu peux me dire ce que tu entends dans ce que je viens de dire ?", bonne: 0, mot: "Une demande de connexion : elle vérifie le lien avant l'action." },
+      { phrase: "Tu ranges ta chambre, sinon pas d'écran ce week-end.", bonne: 1, mot: "La sanction est annoncée. C'est peut-être nécessaire, mais ce n'est pas une demande." },
+      { phrase: "Ça t'irait de prendre les enfants mardi ? Sinon je trouverai autre chose.", bonne: 0, mot: "Le non est prévu, et il ne casse rien." },
+    ],
+  },
+  {
+    famille: "Chercher plus loin",
+    type: "choix",
+    titre: "Quel besoin, dessous ?",
+    consigne: "Sous la phrase, qu'est-ce qui cherche à se faire entendre ?",
+    items: [
+      {
+        phrase: "Tu ne m'écoutes jamais quand je te raconte ma journée.",
+        options: [
+          { texte: "Que tu poses ton téléphone", bonne: false, mot: "C'est une stratégie : une seule façon parmi d'autres." },
+          { texte: "Partager ce qui compte pour moi", bonne: true, mot: "Universel, et vrai même si l'autre n'est pas là." },
+          { texte: "Que tu sois moins égoïste", bonne: false, mot: "Un jugement déguisé en besoin." },
+          { texte: "Du repos", bonne: false, mot: "Un vrai besoin, mais pas celui que la scène touche." },
+        ],
+      },
+      {
+        phrase: "Je ne supporte plus qu'on décide sans me demander mon avis.",
+        options: [
+          { texte: "Être consulté avant chaque décision", bonne: false, mot: "Une stratégie précise, donc négociable — mais pas le besoin." },
+          { texte: "Que les autres arrêtent", bonne: false, mot: "Ça dit ce que les autres doivent faire, pas ce qui est vivant en moi." },
+          { texte: "Compter dans ce qui se décide", bonne: true, mot: "Considération, participation : ça peut se nourrir de mille manières." },
+          { texte: "De la tranquillité", bonne: false, mot: "Plausible, mais la phrase parle de place, pas de calme." },
+        ],
+      },
+      {
+        phrase: "Il ne me remercie jamais pour ce que je fais à la maison.",
+        options: [
+          { texte: "Qu'il dise merci le soir", bonne: false, mot: "Une formule attendue d'une personne : une stratégie." },
+          { texte: "Que mon travail soit vu", bonne: true, mot: "Reconnaissance : le besoin tient debout tout seul." },
+          { texte: "Qu'il soit reconnaissant", bonne: false, mot: "Ça décrit ce que l'autre doit ressentir. On ne peut pas l'exiger." },
+          { texte: "De la liberté", bonne: false, mot: "Un besoin réel, mais hors sujet ici." },
+        ],
+      },
+      {
+        phrase: "J'en ai marre qu'elle change les horaires à la dernière minute.",
+        options: [
+          { texte: "Qu'elle prévienne 48 h à l'avance", bonne: false, mot: "Excellente demande — mais c'est déjà la solution, pas le besoin." },
+          { texte: "Qu'elle soit plus professionnelle", bonne: false, mot: "Une étiquette posée sur quelqu'un." },
+          { texte: "Pouvoir m'organiser", bonne: true, mot: "Prévisibilité, autonomie : ça vaudrait pour n'importe qui." },
+          { texte: "De l'affection", bonne: false, mot: "Rien dans la scène ne pointe vers là." },
+        ],
+      },
+      {
+        phrase: "Mon fils claque la porte de sa chambre dès que je pose une question.",
+        options: [
+          { texte: "Qu'il réponde poliment", bonne: false, mot: "Une exigence de comportement, pas un besoin." },
+          { texte: "Qu'il ait du respect pour moi", bonne: false, mot: "« Du respect » sert souvent à nommer l'obéissance qu'on attend." },
+          { texte: "Garder le lien avec lui", bonne: true, mot: "C'est ce qui est réellement en jeu, et ça ne dépend pas d'une porte." },
+          { texte: "Du silence", bonne: false, mot: "Il l'a, justement, et ça ne règle rien." },
+        ],
+      },
+      {
+        phrase: "Elle m'a corrigé devant toute l'équipe.",
+        options: [
+          { texte: "Qu'elle s'excuse", bonne: false, mot: "Une réparation possible, choisie parmi d'autres." },
+          { texte: "Être traité avec ménagement devant les autres", bonne: true, mot: "Considération, dignité : un besoin partagé par tous les humains." },
+          { texte: "Qu'elle me parle en privé la prochaine fois", bonne: false, mot: "Une très bonne demande, et une stratégie." },
+          { texte: "De l'apprentissage", bonne: false, mot: "Elle apportait peut-être une information utile : ce n'est pas là que ça coince." },
+        ],
+      },
+    ],
+  },
+  {
+    famille: "Chercher plus loin",
+    type: "choix",
+    titre: "Qu'est-ce qui manque ?",
+    consigne: "Le message est presque complet. Quelle étape n'y est pas ?",
+    items: [
+      {
+        phrase: "Quand tu rentres tard, je me sens seule. Est-ce que tu peux me prévenir ?",
+        options: [
+          { texte: "Le fait", bonne: false, mot: "« Rentrer tard » reste vague, mais il y a bien une observation." },
+          { texte: "Le sentiment", bonne: false, mot: "« Seule » est là." },
+          { texte: "Le besoin", bonne: true, mot: "Rien ne dit ce qui est en jeu : le lien ? la sécurité ? Sans lui, la demande ressemble à une consigne." },
+          { texte: "La demande", bonne: false, mot: "Elle est présente et concrète." },
+        ],
+      },
+      {
+        phrase: "Tu ne penses jamais à moi. Je suis triste, j'ai besoin de considération, tu peux m'appeler en partant ?",
+        options: [
+          { texte: "Le fait", bonne: true, mot: "« Tu ne penses jamais à moi » est un verdict. Que s'est-il passé, précisément, et quand ?" },
+          { texte: "Le sentiment", bonne: false, mot: "« Triste » est bien un sentiment." },
+          { texte: "Le besoin", bonne: false, mot: "La considération est nommée." },
+          { texte: "La demande", bonne: false, mot: "Appeler en partant : c'est concret." },
+        ],
+      },
+      {
+        phrase: "Hier tu es rentré à 21 h sans message. J'ai besoin de lien. Tu peux m'écrire quand tu es retenu ?",
+        options: [
+          { texte: "Le fait", bonne: false, mot: "Une heure, un message absent : c'est filmable." },
+          { texte: "Le sentiment", bonne: true, mot: "On ne sait pas ce que ça a fait. Sans ça, la phrase devient un règlement intérieur." },
+          { texte: "Le besoin", bonne: false, mot: "Le lien est nommé." },
+          { texte: "La demande", bonne: false, mot: "Écrire quand on est retenu : réalisable." },
+        ],
+      },
+      {
+        phrase: "Hier tu es rentré à 21 h sans message. Je me suis sentie seule, parce que j'ai besoin de lien.",
+        options: [
+          { texte: "Le fait", bonne: false, mot: "Il est précis." },
+          { texte: "Le sentiment", bonne: false, mot: "Il est dit, et sans reproche." },
+          { texte: "Le besoin", bonne: false, mot: "Il est nommé." },
+          { texte: "La demande", bonne: true, mot: "Sans elle, l'autre reste avec l'inconfort et sans rien à en faire. C'est souvent là que naît la culpabilité." },
+        ],
+      },
+      {
+        phrase: "Ce matin j'ai vu la vaisselle de trois jours. Je me sens découragée, j'ai besoin de soutien. Tu pourrais faire un effort ?",
+        options: [
+          { texte: "Le fait", bonne: false, mot: "Trois jours de vaisselle : c'est observable." },
+          { texte: "Le sentiment", bonne: false, mot: "« Découragée » est juste." },
+          { texte: "Le besoin", bonne: false, mot: "Le soutien est nommé." },
+          { texte: "Une demande concrète", bonne: true, mot: "« Faire un effort » n'est pas réalisable : personne ne sait quel geste ferait l'affaire. Quoi, quand, comment ?" },
+        ],
+      },
+    ],
+  },
+  {
+    famille: "Chercher plus loin",
+    type: "choix",
+    titre: "Répondre sans couper le lien",
+    consigne: "Quelle réponse reste avec la personne ?",
+    items: [
+      {
+        phrase: "J'en ai marre, je n'y arrive plus avec ma fille.",
+        options: [
+          { texte: "Tu devrais poser des limites plus tôt dans la journée.", bonne: false, mot: "Le conseil. Il déplace l'attention vers celui qui parle." },
+          { texte: "Ah, c'était pareil avec mon fils à cet âge.", bonne: false, mot: "L'histoire personnelle. Elle prend la place." },
+          { texte: "Mais non, tu es une très bonne mère.", bonne: false, mot: "La consolation. Elle nie ce qui vient d'être dit." },
+          { texte: "Tu es épuisée, et tu aurais besoin de sentir que ce que tu fais compte ?", bonne: true, mot: "Une hypothèse tendue, qui laisse la personne au centre." },
+        ],
+      },
+      {
+        phrase: "Mon chef a validé mon projet, puis il l'a présenté comme le sien.",
+        options: [
+          { texte: "Il faut que tu ailles lui en parler.", bonne: false, mot: "Le conseil arrive avant que la personne ait fini d'être entendue." },
+          { texte: "C'est vraiment un manipulateur.", bonne: false, mot: "Prendre parti soulage sur le moment et ferme la réflexion." },
+          { texte: "Tu es en colère, tu aurais eu besoin que ton travail soit reconnu ?", bonne: true, mot: "Sentiment et besoin, proposés en question." },
+          { texte: "Au moins le projet est passé, c'est déjà ça.", bonne: false, mot: "Le côté positif forcé : ça referme la porte." },
+        ],
+      },
+      {
+        phrase: "Je crois que je vais tout arrêter, la formation, tout.",
+        options: [
+          { texte: "Attends, ne prends pas de décision maintenant.", bonne: false, mot: "Rassurer, c'est encore décider pour l'autre." },
+          { texte: "Qu'est-ce qui s'est passé cette semaine ?", bonne: false, mot: "L'enquête. Ça peut venir, mais plus tard." },
+          { texte: "Tu es découragée là, tu aurais besoin de souffler ?", bonne: true, mot: "On reste sur ce qui est vivant maintenant." },
+          { texte: "Tu as déjà fait la moitié, ce serait dommage.", bonne: false, mot: "L'argument. Il oppose au lieu d'accompagner." },
+        ],
+      },
+      {
+        phrase: "Papa, personne ne veut jouer avec moi à la récré.",
+        options: [
+          { texte: "Va voir les autres et propose un jeu, tu verras.", bonne: false, mot: "La solution avant l'écoute. L'enfant apprend qu'on ne l'écoute pas." },
+          { texte: "Tu es triste, tu aurais aimé qu'on t'appelle pour jouer ?", bonne: true, mot: "Simple, à sa portée, et vérifiable par lui." },
+          { texte: "Mais si, hier tu m'as dit que tu avais joué au foot.", bonne: false, mot: "Corriger les faits ferme la conversation." },
+          { texte: "Ne t'inquiète pas, ça va s'arranger.", bonne: false, mot: "L'apaisement rapide : il dit surtout notre propre inconfort." },
+        ],
+      },
+      {
+        phrase: "Tu n'as même pas remarqué que j'avais tout rangé.",
+        options: [
+          { texte: "Si, j'ai vu, mais je n'ai rien dit.", bonne: false, mot: "Se défendre. La conversation devient un procès." },
+          { texte: "Tu n'as qu'à me le dire quand tu fais quelque chose.", bonne: false, mot: "Renvoyer la responsabilité." },
+          { texte: "Tu es déçue, tu aurais eu besoin que ce travail soit vu ?", bonne: true, mot: "Écouter d'abord, même quand la phrase nous vise." },
+          { texte: "Merci alors, c'est gentil.", bonne: false, mot: "Le remerciement réflexe passe à côté de ce qui vient d'être dit." },
+        ],
+      },
+    ],
+  },
+  {
+    famille: "Reformuler",
+    type: "traduction",
+    titre: "Traduire un jugement",
+    consigne: "Écris ta version, puis compare. Il n'y a pas une seule bonne réponse.",
+    items: [
+      {
+        phrase: "Il est complètement irresponsable.",
+        modele:
+          "Il a oublié deux fois ce mois-ci de récupérer les enfants à l'heure. Ça m'inquiète, j'ai besoin de fiabilité pour m'organiser.",
+        pourquoi: "Le fait rend le désaccord discutable. Le besoin dit ce qui est réellement en jeu.",
+      },
+      {
+        phrase: "Elle se fiche complètement de ce que je pense.",
+        modele:
+          "Hier en réunion, j'ai donné mon avis et elle a enchaîné sans y répondre. Je me suis senti agacé, j'aurais eu besoin que ma proposition soit prise en compte.",
+        pourquoi: "« Se fiche de » prête une intention. Ce qu'on a vu, c'est un enchaînement.",
+      },
+      {
+        phrase: "Tu ne fais jamais rien à la maison.",
+        modele:
+          "Cette semaine, j'ai fait les courses et les repas tous les soirs. Je suis épuisée, j'ai besoin de partager la charge.",
+        pourquoi: "« Jamais » est réfutable en une phrase, et la conversation part sur la comptabilité.",
+      },
+      {
+        phrase: "Mon ado est devenu insupportable.",
+        modele:
+          "Ces trois derniers matins, il a répondu « lâche-moi » quand je lui ai demandé s'il avait mangé. Je me sens démunie, j'ai besoin de garder un contact avec lui.",
+        pourquoi: "L'étiquette colle à la personne. Le fait, lui, décrit un moment — et un moment peut changer.",
+      },
+      {
+        phrase: "Ils nous prennent vraiment pour des imbéciles.",
+        modele:
+          "La date de livraison a été repoussée trois fois sans explication. Je suis en colère, j'ai besoin de clarté sur ce qui se passe.",
+        pourquoi: "Le « ils » collectif empêche toute réponse. Un fait daté ouvre une discussion possible.",
+      },
+      {
+        phrase: "Je me sens humiliée par sa remarque.",
+        modele:
+          "Quand elle a dit devant l'équipe « ça, c'est du travail d'amateur », je me suis sentie honteuse puis en colère. J'aurais eu besoin de considération devant les autres.",
+        pourquoi: "« Humiliée » décrit ce que l'autre m'aurait fait. Dessous, il y a des sentiments qui m'appartiennent.",
+      },
     ],
   },
 ];
@@ -1812,8 +2054,33 @@ function Entrainement({ onRetour }) {
   const [i, setI] = useState(0);
   const [choisi, setChoisi] = useState(null);
   const [score, setScore] = useState(0);
+  const [essai, setEssai] = useState("");
+  const [devoile, setDevoile] = useState(false);
+
+  const relancer = (k) => {
+    setSerie(k);
+    setI(0);
+    setChoisi(null);
+    setScore(0);
+    setEssai("");
+    setDevoile(false);
+  };
+
+  const suivante = () => {
+    setI((n) => n + 1);
+    setChoisi(null);
+    setEssai("");
+    setDevoile(false);
+  };
 
   if (serie === null) {
+    const familles = [];
+    EXERCICES.forEach((ex, k) => {
+      const derniere = familles[familles.length - 1];
+      if (derniere && derniere.nom === ex.famille) derniere.series.push({ ex, k });
+      else familles.push({ nom: ex.famille, series: [{ ex, k }] });
+    });
+
     return (
       <div className="ecran">
         <header className="barre">
@@ -1821,20 +2088,27 @@ function Entrainement({ onRetour }) {
         </header>
         <div className="entete">
           <div className="eyebrow">S'entraîner</div>
-          <h1 className="titre">Les distinctions qui font tout</h1>
+          <h1 className="titre">Huit séries, à froid</h1>
           <p className="chapo">
-            Ces trois séries se pratiquent à froid, quand rien ne brûle. C'est là qu'elles
-            s'installent.
+            Ces distinctions se travaillent quand rien ne brûle. C'est là qu'elles s'installent, et
+            elles reviennent toutes seules le jour où ça chauffe.
           </p>
         </div>
-        <div className="secondaires colonne">
-          {EXERCICES.map((ex, k) => (
-            <button key={ex.titre} className="tuile large-tuile" onClick={() => { setSerie(k); setI(0); setChoisi(null); setScore(0); }}>
-              <span className="tuile-titre">{ex.titre}</span>
-              <span className="tuile-sous">{ex.items.length} phrases · {ex.consigne}</span>
-            </button>
-          ))}
-        </div>
+        {familles.map((f) => (
+          <div key={f.nom} className="chapitre">
+            <div className="chapitre-tete">{f.nom}</div>
+            <div className="secondaires colonne">
+              {f.series.map(({ ex, k }) => (
+                <button key={ex.titre} className="tuile large-tuile" onClick={() => relancer(k)}>
+                  <span className="tuile-titre" style={{ color: T.nuit }}>{ex.titre}</span>
+                  <span className="tuile-sous">
+                    {ex.items.length} phrases · {ex.consigne}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -1851,14 +2125,24 @@ function Entrainement({ onRetour }) {
         </header>
         <div className="carte">
           <div className="eyebrow">{ex.titre}</div>
-          <p className="phrase">{score} sur {ex.items.length}</p>
-          <p className="note">
-            Ce qui compte n'est pas le score : c'est le temps que tu mets, la prochaine fois, à
-            repérer la différence dans ta propre phrase.
+          <p className="phrase">
+            {ex.type === "traduction"
+              ? `${ex.items.length} phrases travaillées`
+              : `${score} sur ${ex.items.length}`}
           </p>
-          <button className="principal large" style={{ background: T.encre }} onClick={() => { setI(0); setScore(0); setChoisi(null); }}>
-            Refaire la série
-          </button>
+          <p className="note">
+            {ex.type === "traduction"
+              ? "Reprends la série dans quelques jours avec tes propres phrases : celles que tu as pensées cette semaine sans les dire."
+              : "Ce qui compte n'est pas le score, c'est le temps qu'il te faudra la prochaine fois pour repérer la différence dans ta propre phrase."}
+          </p>
+          <div className="recap-actions">
+            <button className="principal plein" style={{ background: T.encre }} onClick={() => relancer(serie)}>
+              Refaire la série
+            </button>
+            <button className="secondaire plein" onClick={() => setSerie(null)}>
+              Choisir une autre série
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -1873,44 +2157,105 @@ function Entrainement({ onRetour }) {
       <div className="carte">
         <div className="eyebrow">{ex.consigne}</div>
         <p className="phrase-exo">« {item.phrase} »</p>
-        <div className="choix">
-          {ex.choix.map((c, k) => {
-            const juste = k === item.bonne;
-            const montre = choisi !== null;
-            return (
-              <button
-                key={c}
-                className="option"
-                onClick={() => {
-                  if (choisi !== null) return;
-                  setChoisi(k);
-                  if (juste) setScore((s) => s + 1);
-                }}
-                style={
-                  montre
-                    ? {
-                        borderColor: juste ? T.autre : k === choisi ? T.dire : T.trait,
-                        color: juste ? T.autre : k === choisi ? T.dire : T.gris,
-                      }
-                    : undefined
-                }
-              >
-                {c}
-              </button>
-            );
-          })}
-        </div>
-        {choisi !== null && (
+
+        {ex.type === "binaire" && (
+          <div className="choix">
+            {ex.choix.map((c, k) => {
+              const juste = k === item.bonne;
+              const montre = choisi !== null;
+              return (
+                <button
+                  key={c}
+                  className="option"
+                  onClick={() => {
+                    if (choisi !== null) return;
+                    setChoisi(k);
+                    if (juste) setScore((n) => n + 1);
+                  }}
+                  style={
+                    montre
+                      ? {
+                          borderColor: juste ? T.autre : k === choisi ? T.dire : T.trait,
+                          color: juste ? T.autre : k === choisi ? T.dire : T.gris,
+                        }
+                      : undefined
+                  }
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {ex.type === "choix" && (
+          <div className="choix">
+            {item.options.map((o, k) => {
+              const montre = choisi !== null;
+              return (
+                <button
+                  key={o.texte}
+                  className="option"
+                  onClick={() => {
+                    if (choisi !== null) return;
+                    setChoisi(k);
+                    if (o.bonne) setScore((n) => n + 1);
+                  }}
+                  style={
+                    montre
+                      ? {
+                          borderColor: o.bonne ? T.autre : k === choisi ? T.dire : T.trait,
+                          color: o.bonne ? T.autre : k === choisi ? T.dire : T.gris,
+                        }
+                      : undefined
+                  }
+                >
+                  {o.texte}
+                  {montre && (k === choisi || o.bonne) && (
+                    <span className="option-mot">{o.mot}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {ex.type === "traduction" && (
           <>
-            <p className="retour-exo">{item.mot}</p>
-            <button
-              className="principal large"
-              style={{ background: T.encre }}
-              onClick={() => { setI((n) => n + 1); setChoisi(null); }}
-            >
-              Suivante
-            </button>
+            <textarea
+              className="champ"
+              rows={4}
+              placeholder="Le fait d'abord, puis ce que ça te fait, puis le besoin."
+              value={essai}
+              onChange={(e) => setEssai(e.target.value)}
+            />
+            {!devoile && (
+              <button
+                className="principal plein"
+                style={{ background: T.encre, marginTop: 12, opacity: essai.trim() ? 1 : 0.35 }}
+                disabled={!essai.trim()}
+                onClick={() => setDevoile(true)}
+              >
+                Comparer avec une proposition
+              </button>
+            )}
+            {devoile && (
+              <div className="aide" style={{ borderColor: T.autre, marginTop: 16 }}>
+                <div className="eyebrow">Une version possible</div>
+                <p className="aide-exemple">{item.modele}</p>
+                <div className="eyebrow">Pourquoi</div>
+                <p className="aide-piege">{item.pourquoi}</p>
+              </div>
+            )}
           </>
+        )}
+
+        {ex.type === "binaire" && choisi !== null && <p className="retour-exo">{item.mot}</p>}
+
+        {(choisi !== null || devoile) && (
+          <button className="principal plein" style={{ background: T.encre, marginTop: 16 }} onClick={suivante}>
+            {i + 1 === ex.items.length ? "Terminer" : "Suivante"}
+          </button>
         )}
       </div>
     </div>
@@ -2340,6 +2685,8 @@ const CSS = `
   border: 1px solid ${T.trait}; background: ${T.papier}; border-radius: 12px; padding: 12px;
   font-family: Karla, sans-serif; font-size: 14.5px; color: ${T.encre}; cursor: pointer; text-align: left;
 }
+.option { display: flex; flex-direction: column; gap: 5px; }
+.option-mot { font-size: 12.5px; line-height: 1.5; opacity: .85; }
 .retour-exo { font-size: 13.5px; line-height: 1.55; color: ${T.encre}; margin: 14px 0 0; padding-left: 12px; border-left: 1px solid ${T.trait}; }
 .large-tuile { padding: 18px 16px; }
 
