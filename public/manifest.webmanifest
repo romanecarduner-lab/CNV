@@ -1,0 +1,18 @@
+{
+  "name": "Pratique quotidienne — CNV",
+  "short_name": "CNV",
+  "description": "S'écouter soi, écouter l'autre, se dire.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F9F7F3",
+  "theme_color": "#F9F7F3",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
