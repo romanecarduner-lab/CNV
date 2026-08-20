@@ -1708,14 +1708,16 @@ function Accueil({ onOuvrir, onAller, journal }) {
             <BranchIcon />
           </span>
           <span className="tuile-titre" style={{ color: T.autre }}>S'entraîner</span>
-          <span className="tuile-sous">Trois séries courtes, à froid</span>
+          <span className="tuile-sous">{EXERCICES.length} séries courtes, à froid</span>
         </button>
         <button className="tuile" onClick={() => onAller("theorie")}>
           <span className="medaille petite" style={{ background: "#F8E9D5", color: T.dire }}>
             <CompassIcon />
           </span>
           <span className="tuile-titre" style={{ color: T.dire }}>Comprendre</span>
-          <span className="tuile-sous">Seize repères, à lire dans le désordre</span>
+          <span className="tuile-sous">
+            {THEORIE.reduce((n, sec) => n + sec.entrees.length, 0)} repères, à lire dans le désordre
+          </span>
         </button>
       </div>
     </div>
@@ -2088,7 +2090,7 @@ function Entrainement({ onRetour }) {
         </header>
         <div className="entete">
           <div className="eyebrow">S'entraîner</div>
-          <h1 className="titre">Huit séries, à froid</h1>
+          <h1 className="titre">{EXERCICES.length} séries, à froid</h1>
           <p className="chapo">
             Ces distinctions se travaillent quand rien ne brûle. C'est là qu'elles s'installent, et
             elles reviennent toutes seules le jour où ça chauffe.
@@ -2442,6 +2444,7 @@ const CSS = `
   max-width: 430px;
   margin: 0 auto;
   min-height: 100vh;
+  min-height: 100dvh;
   background: ${T.fond};
   box-shadow: 0 0 60px rgba(22,34,46,0.06);
 }
@@ -2768,8 +2771,8 @@ button:focus-visible { outline: 2px solid ${T.nuit}; outline-offset: 2px; }
 
 /* accueil : tout tient dans une hauteur d'écran, sans défilement */
 .ecran.accueil {
-  height: 100vh;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -2777,7 +2780,6 @@ button:focus-visible { outline: 2px solid ${T.nuit}; outline-offset: 2px; }
   gap: clamp(8px, 1.5vh, 16px);
   padding: clamp(14px, 2.4vh, 26px) 22px
     calc(clamp(16px, 2.6vh, 30px) + env(safe-area-inset-bottom, 0px));
-  overflow: hidden;
 }
 .accueil .entete-haut { margin-bottom: 0; }
 .accueil .titre-accueil {
