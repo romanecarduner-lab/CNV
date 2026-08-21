@@ -1,7 +1,7 @@
 {
-  "name": "Pratique quotidienne — CNV",
-  "short_name": "CNV",
-  "description": "S'écouter soi, écouter l'autre, se dire.",
+  "name": "Deux collines",
+  "short_name": "Deux collines",
+  "description": "Y voir clair, comprendre l'autre, dire ce qui compte.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

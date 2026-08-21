@@ -1,6 +1,6 @@
-# Pratique quotidienne — CNV
+# Deux collines
 
-Application web de pratique de la communication nonviolente : auto-empathie, empathie, expression, journal quotidien, entraînement et section théorique.
+Deux collines — application web de pratique de la communication nonviolente : auto-empathie, empathie, expression, journal quotidien, entraînement et section théorique.
 
 Aucun serveur, aucun compte, aucune mesure d'audience. Les notes sont écrites dans le stockage local du navigateur et n'en sortent jamais.
 

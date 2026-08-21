@@ -1697,7 +1697,7 @@ function Accueil({ onOuvrir, onAller, journal, profil }) {
     <div className="ecran accueil">
       <header className="barre entete-haut">
         <span className="eyebrow" style={{ marginBottom: 0 }}>
-          {profil && profil.prenom ? `Bonjour ${profil.prenom}` : "Pratique quotidienne"}
+          {profil && profil.prenom ? `Bonjour ${profil.prenom}` : "Deux collines"}
         </span>
         <button className="lien lien-icone" onClick={() => onAller("reglages")}>
           Réglages
@@ -1920,31 +1920,65 @@ function Bienvenue({ onValider }) {
   const [prenom, setPrenom] = useState("");
   const [accord, setAccord] = useState("m");
 
+  const atouts = [
+    {
+      Icone: TangleIcon,
+      couleur: T.soi,
+      medaille: ORIENTATIONS.soi.medaille,
+      titre: "Y voir clair quand ça bouillonne",
+      corps: "Démêler ce qui se passe en toi avant de dire quelque chose que tu regretteras.",
+    },
+    {
+      Icone: HillIcon,
+      couleur: T.autre,
+      medaille: ORIENTATIONS.autre.medaille,
+      titre: "Comprendre quelqu'un sans lui donner raison",
+      corps: "Aller voir ce qui vit de son côté, même quand sa phrase t'a fait mal.",
+    },
+    {
+      Icone: SpeechIcon,
+      couleur: T.dire,
+      medaille: ORIENTATIONS.dire.medaille,
+      titre: "Dire ce qui compte sans casser le lien",
+      corps: "Préparer tes mots pour qu'ils aient une chance d'être entendus.",
+    },
+  ];
+
   return (
     <div className="ecran">
-      <div className="entete" style={{ marginTop: 10 }}>
+      <div className="entete" style={{ marginTop: 14 }}>
         <div className="eyebrow">Bienvenue</div>
-        <h1 className="titre">Un carnet pour pratiquer, pas un professeur.</h1>
+        <h1 className="titre">Deux collines</h1>
+        <p className="signature-nom">La tienne, la sienne. Tout se joue dans le trajet.</p>
+      </div>
+
+      <p className="amorce-atouts">Ici, tu vas pouvoir :</p>
+
+      <div className="atouts">
+        {atouts.map((a) => (
+          <div key={a.titre} className="atout">
+            <span className="medaille petite" style={{ background: a.medaille, color: a.couleur, marginBottom: 0 }}>
+              <a.Icone />
+            </span>
+            <span className="atout-texte">
+              <span className="atout-titre" style={{ color: a.couleur }}>{a.titre}</span>
+              <span className="atout-corps">{a.corps}</span>
+            </span>
+          </div>
+        ))}
       </div>
 
       <p className="bienvenue-texte">
-        Cette application accompagne une pratique quotidienne de la communication nonviolente. Elle
-        sert à trois choses : démêler ce qui se passe en toi, chercher ce qui vit chez quelqu'un
-        d'autre, et préparer ce que tu veux dire.
-      </p>
-      <p className="bienvenue-texte">
-        Elle ne remplace ni une formation, ni un accompagnement, et ne délivre aucun titre. Elle
-        n'est ni certifiée ni affiliée à une association de CNV.
+        Trois minutes suffisent la plupart du temps. Ce n'est pas une technique pour avoir gain de
+        cause : c'est une façon de rester en lien quand ça tangue — y compris avec toi-même.
       </p>
 
       <div className="encart">
-        <div className="eyebrow">Tes données ne vont nulle part</div>
-        <p className="bienvenue-texte" style={{ marginTop: 0 }}>
-          Tout ce que tu écris — ton prénom, ton journal, tes phrases — reste dans la mémoire de ce
-          navigateur, sur cet appareil. Il n'y a ni compte, ni serveur, ni mesure d'audience, ni
-          publicité. {AUTEUR}, qui a créé cette application, n'y a aucun accès et ne peut rien en
-          lire.
+        <p className="bienvenue-texte" style={{ margin: 0 }}>
+          Ce que tu écris ici ne quitte jamais ton appareil. Pas de compte, pas de serveur, personne
+          d'autre ne le lit — pas même moi.
         </p>
+        <p className="signature">{AUTEUR}</p>
       </div>
 
       <div className="champ-bloc">
@@ -1956,9 +1990,6 @@ function Bienvenue({ onValider }) {
           value={prenom}
           onChange={(e) => setPrenom(e.target.value)}
         />
-        <p className="note" style={{ marginTop: 8 }}>
-          Facultatif. Il sert seulement à te dire bonjour, et il ne quitte pas cet appareil.
-        </p>
       </div>
 
       <div className="champ-bloc">
@@ -1983,13 +2014,15 @@ function Bienvenue({ onValider }) {
 
       <button
         className="principal plein"
-        style={{ background: T.soi, marginTop: 20 }}
+        style={{ background: T.soi, marginTop: 8 }}
         onClick={() => onValider({ prenom: prenom.trim(), accord })}
       >
         Commencer
       </button>
-      <p className="note bas">
-        Tout est modifiable ensuite dans les réglages, où figurent aussi les mentions légales.
+
+      <p className="petit-caractere">
+        Application indépendante, inspirée du processus de Marshall Rosenberg, sans affiliation au
+        CNVC. Réglages et mentions légales accessibles depuis l'accueil.
       </p>
     </div>
   );
@@ -3078,6 +3111,23 @@ const CSS = `
 .bascule.court { margin: 0; flex: 0 0 auto; }
 .bascule.court .onglet { padding: 6px 10px; font-size: 12px; }
 .bienvenue-texte { font-size: 14.5px; line-height: 1.6; color: ${T.encre}; margin: 0 0 14px; }
+.amorce-atouts {
+  font-family: Fraunces, Georgia, serif; font-size: 17px; color: ${T.nuit};
+  margin: 0 0 4px;
+}
+.atouts { display: flex; flex-direction: column; gap: 16px; margin: 4px 0 24px; }
+.atout { display: flex; align-items: flex-start; gap: 14px; }
+.atout-texte { display: flex; flex-direction: column; gap: 3px; }
+.atout-titre { font-family: Fraunces, Georgia, serif; font-size: 17px; line-height: 1.25; }
+.atout-corps { font-size: 13.5px; line-height: 1.5; color: ${T.gris}; }
+.signature-nom { font-size: 15px; line-height: 1.5; color: ${T.gris}; margin: 0; }
+.signature {
+  font-family: Fraunces, Georgia, serif; font-size: 14px; color: ${T.encre};
+  margin: 10px 0 0; text-align: right;
+}
+.petit-caractere {
+  font-size: 11.5px; line-height: 1.5; color: ${T.gris}; margin: 18px 0 0; text-align: center;
+}
 .encart {
   background: ${T.brume}; border-radius: 12px; padding: 16px; margin: 6px 0 22px;
 }
