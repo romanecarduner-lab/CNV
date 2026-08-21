@@ -1,6 +1,16 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 
 /* ------------------------------------------------------------------ */
+/*  Identité de l'éditrice — alimente l'accueil, les réglages et les mentions */
+/* ------------------------------------------------------------------ */
+
+const AUTEUR = "Romane Carduner";
+const CONTACT = "contact@romanecarduner-psychologue.fr";
+const STATUT = "Entrepreneure individuelle — SIRET 844 603 142 00028";
+const ADRESSE = "Adresse postale communiquée sur demande à l'hébergeur";
+const MAJ = "août 2026";
+
+/* ------------------------------------------------------------------ */
 /*  Jetons de design                                                    */
 /* ------------------------------------------------------------------ */
 
@@ -1025,6 +1035,7 @@ function Selecteur({ groupes, valeurs, couleur, onToggle }) {
 
 const CLE_JOURNAL = "cnv-journal-v1";
 const CLE_REGLAGES = "cnv-reglages-v1";
+const CLE_PROFIL = "cnv-profil-v1";
 
 function lire(cle, defaut) {
   try {
@@ -1055,8 +1066,13 @@ export default function App() {
   const [refus, setRefus] = useState([]);
   const [journal, setJournal] = useState(() => lire(CLE_JOURNAL, []));
   const [reglages, setReglages] = useState(() =>
-    lire(CLE_REGLAGES, { accord: "m", rappel: false })
+    lire(CLE_REGLAGES, { accord: "m", heure: "21:00" })
   );
+  const [profil, setProfil] = useState(() => lire(CLE_PROFIL, null));
+
+  useEffect(() => {
+    if (profil) ecrire(CLE_PROFIL, profil);
+  }, [profil]);
 
   useEffect(() => ecrire(CLE_JOURNAL, journal), [journal]);
   useEffect(() => ecrire(CLE_REGLAGES, reglages), [reglages]);
@@ -1111,7 +1127,10 @@ export default function App() {
   };
 
   const ouvrir = (cle) => {
-    setReponses((r) => ({ ...r, [cle]: { ...r[cle], accord: reglages.accord } }));
+    setReponses((r) => ({
+      ...r,
+      [cle]: { ...r[cle], accord: (profil && profil.accord) || reglages.accord },
+    }));
     setOrientation(cle);
     setEtape(0);
     setAideOuverte(false);
@@ -1209,6 +1228,22 @@ export default function App() {
     if (ok) setTimeout(() => setCopie(false), 2000);
   };
 
+  if (!profil) {
+    return (
+      <div className="racine">
+        <style>{CSS}</style>
+        <div className="cadre">
+          <Bienvenue
+            onValider={(p) => {
+              setProfil(p);
+              setReglages((r) => ({ ...r, accord: p.accord }));
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
   /* ---------------- rendu ---------------- */
 
   return (
@@ -1216,7 +1251,7 @@ export default function App() {
       <style>{CSS}</style>
       <div className="cadre">
         {vue === "accueil" && (
-          <Accueil onOuvrir={ouvrir} onAller={setVue} journal={journal} />
+          <Accueil onOuvrir={ouvrir} onAller={setVue} journal={journal} profil={profil} />
         )}
 
         {vue === "parcours" && bifurcation && (
@@ -1612,9 +1647,11 @@ export default function App() {
             journal={journal}
             onEcrire={() => setVue("note")}
             onExporter={() => setVue("impression")}
+            onMentions={() => setVue("mentions")}
             onRetour={() => setVue("accueil")}
           />
         )}
+        {vue === "mentions" && <Mentions onRetour={() => setVue("reglages")} />}
         {vue === "note" && (
           <NoteDuJour
             onEnregistrer={(e) => { enregistrer(e); setVue("journal"); }}
@@ -1625,12 +1662,16 @@ export default function App() {
           <Reglages
             reglages={reglages}
             setReglages={setReglages}
+            profil={profil}
+            setProfil={setProfil}
             journal={journal}
             onEffacer={() => setJournal([])}
             onExporter={() => setVue("impression")}
+            onMentions={() => setVue("mentions")}
             onRetour={() => setVue("accueil")}
           />
         )}
+        {vue === "mentions" && <Mentions onRetour={() => setVue("reglages")} />}
         {vue === "impression" && (
           <Impression journal={journal} onRetour={() => setVue("journal")} />
         )}
@@ -1648,14 +1689,16 @@ function minuscule(s) {
 
 /* ---------------- Accueil ---------------- */
 
-function Accueil({ onOuvrir, onAller, journal }) {
+function Accueil({ onOuvrir, onAller, journal, profil }) {
   const aujourdhui = journal.some((e) => memeJour(e.date, new Date().toISOString()));
   const pictos = { soi: TangleIcon, autre: HillIcon, dire: SpeechIcon };
 
   return (
     <div className="ecran accueil">
       <header className="barre entete-haut">
-        <span className="eyebrow" style={{ marginBottom: 0 }}>Pratique quotidienne</span>
+        <span className="eyebrow" style={{ marginBottom: 0 }}>
+          {profil && profil.prenom ? `Bonjour ${profil.prenom}` : "Pratique quotidienne"}
+        </span>
         <button className="lien lien-icone" onClick={() => onAller("reglages")}>
           Réglages
           <span className="icone-mini"><GearIcon /></span>
@@ -1720,6 +1763,234 @@ function Accueil({ onOuvrir, onAller, journal }) {
           </span>
         </button>
       </div>
+
+      {!estInstallee() && (
+        <button className="astuce" onClick={() => onAller("reglages")}>
+          Poser l'application sur ton écran d'accueil
+        </button>
+      )}
+    </div>
+  );
+}
+
+function estInstallee() {
+  try {
+    return (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true
+    );
+  } catch (err) {
+    return false;
+  }
+}
+
+function fabriquerRappel(heure) {
+  const [h, m] = (heure || "21:00").split(":");
+  const d = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  const debut = `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}T${p(h)}${p(m)}00`;
+  const tampon = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Pratique quotidienne CNV//FR",
+    "CALSCALE:GREGORIAN",
+    "BEGIN:VEVENT",
+    `UID:journal-cnv-${Date.now()}@local`,
+    `DTSTAMP:${tampon}`,
+    `DTSTART:${debut}`,
+    `DURATION:PT5M`,
+    "RRULE:FREQ=DAILY",
+    "SUMMARY:Note du jour",
+    "DESCRIPTION:Qu'est-ce qui a compté aujourd'hui ? Trois minutes suffisent.",
+    "BEGIN:VALARM",
+    "TRIGGER:PT0M",
+    "ACTION:DISPLAY",
+    "DESCRIPTION:Note du jour",
+    "END:VALARM",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+}
+
+/* ---------------- Mentions légales ---------------- */
+
+function Mentions({ onRetour }) {
+  return (
+    <div className="ecran">
+      <header className="barre">
+        <button className="lien" onClick={onRetour}>← Réglages</button>
+      </header>
+      <div className="entete">
+        <div className="eyebrow">Mentions légales</div>
+        <h1 className="titre">Qui édite, qui héberge, qui ne voit rien</h1>
+      </div>
+
+      <div className="chapitre">
+        <div className="chapitre-tete">Éditeur</div>
+        <p className="reglage-texte">
+          {AUTEUR}, éditrice et directrice de la publication.
+          <br />
+          {STATUT}
+          <br />
+          {ADRESSE}
+          <br />
+          Contact : <a href={`mailto:${CONTACT}`} className="souligne-mail">{CONTACT}</a>
+        </p>
+      </div>
+
+      <div className="chapitre">
+        <div className="chapitre-tete">Hébergeur</div>
+        <p className="reglage-texte">
+          Vercel Inc.
+          <br />
+          440 N Barranca Ave #4133, Covina, CA 91723, États-Unis
+          <br />
+          vercel.com — privacy@vercel.com
+        </p>
+      </div>
+
+      <div className="chapitre">
+        <div className="chapitre-tete">Données personnelles</div>
+        <p className="reglage-texte">
+          Cette application ne collecte aucune donnée personnelle. Il n'y a ni compte, ni
+          inscription, ni formulaire transmis, ni mesure d'audience, ni traceur publicitaire, ni
+          cookie tiers.
+        </p>
+        <p className="reglage-texte">
+          Le prénom, les réglages et les notes du journal sont enregistrés dans le stockage local du
+          navigateur, sur l'appareil utilisé. Ces informations ne transitent par aucun serveur et ne
+          sont accessibles ni à l'éditrice, ni à l'hébergeur, ni à un tiers. Comme ce stockage est
+          strictement nécessaire au fonctionnement du service, il ne requiert pas de consentement
+          préalable.
+        </p>
+        <p className="reglage-texte">
+          Ces données s'effacent en vidant les données de site du navigateur, ou depuis les réglages
+          de l'application. Aucun traitement n'étant opéré par l'éditrice, il n'y a pas de demande
+          d'accès, de rectification ou d'effacement à lui adresser. Toute personne conserve
+          néanmoins le droit d'introduire une réclamation auprès de la CNIL (cnil.fr).
+        </p>
+        <p className="reglage-texte">
+          L'hébergeur peut, de son côté, journaliser des données de connexion pour des raisons
+          techniques et de sécurité, dans les conditions décrites sur vercel.com.
+        </p>
+      </div>
+
+      <div className="chapitre">
+        <div className="chapitre-tete">Propriété intellectuelle</div>
+        <p className="reglage-texte">
+          Les textes, exercices, pictogrammes et éléments graphiques de cette application ont été
+          créés pour elle et sont protégés par le droit d'auteur. Toute reproduction ou adaptation
+          hors usage privé requiert une autorisation écrite.
+        </p>
+        <p className="reglage-texte">
+          Le processus de communication nonviolente a été élaboré par Marshall Rosenberg. Cette
+          application n'est ni certifiée, ni affiliée, ni validée par le Center for Nonviolent
+          Communication ou une association de CNV, et ne délivre aucun titre.
+        </p>
+      </div>
+
+      <div className="chapitre">
+        <div className="chapitre-tete">Responsabilité</div>
+        <p className="reglage-texte">
+          Cette application propose un support de pratique personnelle. Elle ne constitue ni un
+          accompagnement thérapeutique, ni un avis médical, psychologique ou juridique, et ne
+          remplace pas une formation ni l'intervention d'un professionnel.
+        </p>
+        <div className="encart" style={{ marginTop: 14 }}>
+          <div className="eyebrow">En cas de danger</div>
+          <p className="bienvenue-texte" style={{ margin: 0 }}>
+            Urgences médicales 15 · Police 17 · Numéro d'urgence européen 112
+            <br />
+            Violences conjugales 3919 · Enfance en danger 119
+            <br />
+            Souffrance psychique et prévention du suicide 3114
+          </p>
+        </div>
+      </div>
+
+      <p className="note bas">Dernière mise à jour : {MAJ}</p>
+    </div>
+  );
+}
+
+/* ---------------- Première ouverture ---------------- */
+
+function Bienvenue({ onValider }) {
+  const [prenom, setPrenom] = useState("");
+  const [accord, setAccord] = useState("m");
+
+  return (
+    <div className="ecran">
+      <div className="entete" style={{ marginTop: 10 }}>
+        <div className="eyebrow">Bienvenue</div>
+        <h1 className="titre">Un carnet pour pratiquer, pas un professeur.</h1>
+      </div>
+
+      <p className="bienvenue-texte">
+        Cette application accompagne une pratique quotidienne de la communication nonviolente. Elle
+        sert à trois choses : démêler ce qui se passe en toi, chercher ce qui vit chez quelqu'un
+        d'autre, et préparer ce que tu veux dire.
+      </p>
+      <p className="bienvenue-texte">
+        Elle ne remplace ni une formation, ni un accompagnement, et ne délivre aucun titre. Elle
+        n'est ni certifiée ni affiliée à une association de CNV.
+      </p>
+
+      <div className="encart">
+        <div className="eyebrow">Tes données ne vont nulle part</div>
+        <p className="bienvenue-texte" style={{ marginTop: 0 }}>
+          Tout ce que tu écris — ton prénom, ton journal, tes phrases — reste dans la mémoire de ce
+          navigateur, sur cet appareil. Il n'y a ni compte, ni serveur, ni mesure d'audience, ni
+          publicité. {AUTEUR}, qui a créé cette application, n'y a aucun accès et ne peut rien en
+          lire.
+        </p>
+      </div>
+
+      <div className="champ-bloc">
+        <label className="eyebrow" htmlFor="prenom">Comment veux-tu qu'on t'appelle ?</label>
+        <input
+          id="prenom"
+          className="champ"
+          placeholder="Ton prénom, ou rien du tout"
+          value={prenom}
+          onChange={(e) => setPrenom(e.target.value)}
+        />
+        <p className="note" style={{ marginTop: 8 }}>
+          Facultatif. Il sert seulement à te dire bonjour, et il ne quitte pas cet appareil.
+        </p>
+      </div>
+
+      <div className="champ-bloc">
+        <div className="eyebrow">Pour accorder les phrases</div>
+        <div className="bascule">
+          <button
+            className={accord === "m" ? "onglet actif" : "onglet"}
+            onClick={() => setAccord("m")}
+            style={accord === "m" ? { borderColor: T.encre, color: T.encre } : undefined}
+          >
+            je me suis senti
+          </button>
+          <button
+            className={accord === "f" ? "onglet actif" : "onglet"}
+            onClick={() => setAccord("f")}
+            style={accord === "f" ? { borderColor: T.encre, color: T.encre } : undefined}
+          >
+            je me suis sentie
+          </button>
+        </div>
+      </div>
+
+      <button
+        className="principal plein"
+        style={{ background: T.soi, marginTop: 20 }}
+        onClick={() => onValider({ prenom: prenom.trim(), accord })}
+      >
+        Commencer
+      </button>
+      <p className="note bas">
+        Tout est modifiable ensuite dans les réglages, où figurent aussi les mentions légales.
+      </p>
     </div>
   );
 }
@@ -2320,8 +2591,26 @@ function Theorie({ onRetour }) {
   );
 }
 
-function Reglages({ reglages, setReglages, journal, onEffacer, onExporter, onRetour }) {
+function Reglages({ reglages, setReglages, profil, setProfil, journal, onEffacer, onExporter, onMentions, onRetour }) {
   const [confirme, setConfirme] = useState(false);
+  const [rappelFait, setRappelFait] = useState(null);
+
+  const telechargerRappel = () => {
+    try {
+      const contenu = fabriquerRappel(reglages.heure || "21:00");
+      const fichier = new Blob([contenu], { type: "text/calendar;charset=utf-8" });
+      const lien = document.createElement("a");
+      lien.href = URL.createObjectURL(fichier);
+      lien.download = "rappel-journal.ics";
+      document.body.appendChild(lien);
+      lien.click();
+      document.body.removeChild(lien);
+      setTimeout(() => URL.revokeObjectURL(lien.href), 2000);
+      setRappelFait("ok");
+    } catch (err) {
+      setRappelFait("echec");
+    }
+  };
   return (
     <div className="ecran">
       <header className="barre">
@@ -2335,18 +2624,35 @@ function Reglages({ reglages, setReglages, journal, onEffacer, onExporter, onRet
       <div className="chapitre">
         <div className="chapitre-tete">Préférences</div>
         <div className="reglage">
+          <span className="reglage-nom">Prénom</span>
+          <input
+            className="champ heure"
+            style={{ width: 130 }}
+            placeholder="aucun"
+            value={(profil && profil.prenom) || ""}
+            onChange={(e) => setProfil({ ...profil, prenom: e.target.value })}
+            aria-label="Prénom"
+          />
+        </div>
+        <div className="reglage">
           <span className="reglage-nom">Accord par défaut</span>
           <div className="bascule court">
             <button
               className={reglages.accord === "m" ? "onglet actif" : "onglet"}
-              onClick={() => setReglages({ ...reglages, accord: "m" })}
+              onClick={() => {
+                setReglages({ ...reglages, accord: "m" });
+                setProfil({ ...profil, accord: "m" });
+              }}
               style={reglages.accord === "m" ? { borderColor: T.encre, color: T.encre } : undefined}
             >
               masculin
             </button>
             <button
               className={reglages.accord === "f" ? "onglet actif" : "onglet"}
-              onClick={() => setReglages({ ...reglages, accord: "f" })}
+              onClick={() => {
+                setReglages({ ...reglages, accord: "f" });
+                setProfil({ ...profil, accord: "f" });
+              }}
               style={reglages.accord === "f" ? { borderColor: T.encre, color: T.encre } : undefined}
             >
               féminin
@@ -2358,22 +2664,66 @@ function Reglages({ reglages, setReglages, journal, onEffacer, onExporter, onRet
             Rappel du journal
             <span className="reglage-sous">Une invitation à écrire, en fin de journée</span>
           </span>
-          <button
-            className={reglages.rappel ? "interrupteur allume" : "interrupteur"}
-            onClick={() => setReglages({ ...reglages, rappel: !reglages.rappel })}
-            aria-pressed={reglages.rappel}
-          >
-            <span className="pastille" />
-          </button>
+          <input
+            type="time"
+            className="champ heure"
+            value={reglages.heure || "21:00"}
+            onChange={(e) => setReglages({ ...reglages, heure: e.target.value })}
+            aria-label="Heure du rappel"
+          />
+        </div>
+        <p className="reglage-texte">
+          Le rappel passe par ton agenda plutôt que par une notification : l'application ne tourne
+          pas en arrière-plan et n'a aucun serveur pour t'écrire. Le fichier ci-dessous crée un
+          rendez-vous quotidien de cinq minutes, que tu peux modifier ou supprimer comme n'importe
+          quel autre.
+        </p>
+        <button className="secondaire plein" onClick={telechargerRappel}>
+          {rappelFait === "ok"
+            ? "Fichier créé — ouvre-le pour l'ajouter"
+            : rappelFait === "echec"
+            ? "Téléchargement bloqué ici"
+            : "Créer le rappel quotidien"}
+        </button>
+      </div>
+
+      <div className="chapitre">
+        <div className="chapitre-tete">Installer sur ton téléphone</div>
+        <p className="reglage-texte">
+          Cette application s'installe sans passer par un magasin d'applications. Une fois posée sur
+          l'écran d'accueil, elle s'ouvre en plein écran, sans barre de navigateur, et fonctionne
+          hors connexion.
+        </p>
+        <div className="marche">
+          <div className="marche-titre">iPhone et iPad</div>
+          <p className="marche-corps">
+            Ouvre cette page dans Safari, touche le bouton Partager en bas de l'écran, puis fais
+            défiler jusqu'à <em>Sur l'écran d'accueil</em>.
+          </p>
+        </div>
+        <div className="marche">
+          <div className="marche-titre">Android</div>
+          <p className="marche-corps">
+            Ouvre cette page dans Chrome, touche le menu à trois points en haut à droite, puis
+            <em> Ajouter à l'écran d'accueil</em>.
+          </p>
+        </div>
+        <div className="marche">
+          <div className="marche-titre">Ordinateur</div>
+          <p className="marche-corps">
+            Dans Chrome ou Edge, une petite icône d'installation apparaît à droite de la barre
+            d'adresse.
+          </p>
         </div>
       </div>
 
       <div className="chapitre">
         <div className="chapitre-tete">Tes données</div>
         <p className="reglage-texte">
-          Tout ce que tu écris reste sur cet appareil. Aucun compte, aucun envoi vers un serveur,
-          aucune mesure d'audience, aucun partage avec qui que ce soit. Personne d'autre que toi,
-          pas même la personne qui a fait cette application, ne peut lire ton journal.
+          Tout ce que tu écris reste dans la mémoire de ce navigateur, sur cet appareil. Aucun
+          compte, aucun envoi vers un serveur, aucune mesure d'audience, aucune publicité. {AUTEUR}
+          n'a accès à rien : ni à ton prénom, ni à ton journal, ni au fait que tu utilises cette
+          application.
         </p>
         <p className="reglage-texte">
           La contrepartie est là aussi : si tu perds ton téléphone, tes notes partent avec.
@@ -2414,10 +2764,25 @@ function Reglages({ reglages, setReglages, journal, onEffacer, onExporter, onRet
           écrits pour cette application. Les listes s'inspirent du vocabulaire largement partagé dans
           la communauté CNV francophone, sans reprendre le contenu d'un organisme en particulier.
         </p>
+      </div>
+
+      <div className="chapitre">
+        <div className="chapitre-tete">Qui a fait ça</div>
         <p className="reglage-texte">
-          Une erreur, un désaccord, une formulation qui te semble fausse ? Écris-nous : cette
-          application est faite pour être corrigée.
+          Cette application a été conçue et écrite par {AUTEUR}. Elle est née d'une pratique de
+          terrain, pas d'un cahier des charges : chaque écran vient d'une situation rencontrée en
+          accompagnement.
         </p>
+        <p className="reglage-texte">
+          Une erreur, un désaccord, une formulation qui sonne faux, une idée d'exercice ? Écris —
+          les retours sont ce qui la fait avancer.
+        </p>
+        <a className="secondaire plein lien-mail" href={`mailto:${CONTACT}`}>
+          {CONTACT}
+        </a>
+        <button className="secondaire plein" style={{ marginTop: 10 }} onClick={onMentions}>
+          Mentions légales
+        </button>
       </div>
 
       <p className="note bas">
@@ -2712,6 +3077,32 @@ const CSS = `
 .reglage-sous { font-size: 12px; color: ${T.gris}; }
 .bascule.court { margin: 0; flex: 0 0 auto; }
 .bascule.court .onglet { padding: 6px 10px; font-size: 12px; }
+.bienvenue-texte { font-size: 14.5px; line-height: 1.6; color: ${T.encre}; margin: 0 0 14px; }
+.encart {
+  background: ${T.brume}; border-radius: 12px; padding: 16px; margin: 6px 0 22px;
+}
+.champ-bloc { margin-bottom: 20px; }
+.champ-bloc .eyebrow { display: block; }
+.souligne-mail { color: ${T.encre}; }
+.lien-mail {
+  display: block; text-align: center; text-decoration: none; margin-top: 16px;
+  line-height: 1.6; color: ${T.encre};
+}
+.astuce {
+  background: none; border: none; border-top: 1px solid ${T.trait};
+  padding: clamp(8px, 1.4vh, 12px) 0 0; margin: 0; width: 100%;
+  font-family: Karla, sans-serif; font-size: 12.5px; color: ${T.gris};
+  cursor: pointer; text-align: center;
+}
+.astuce:hover { color: ${T.encre}; }
+.champ.heure {
+  width: auto; flex: 0 0 auto; padding: 8px 10px; font-size: 14px;
+  font-family: Karla, sans-serif; color: ${T.encre};
+}
+.marche { margin-top: 16px; padding-left: 12px; border-left: 1px solid ${T.trait}; }
+.marche-titre { font-size: 13.5px; font-weight: 600; color: ${T.encre}; margin-bottom: 3px; }
+.marche-corps { font-size: 13.5px; line-height: 1.55; color: ${T.gris}; margin: 0; }
+.marche-corps em { font-style: normal; color: ${T.encre}; font-weight: 600; }
 .reglage-texte { font-size: 14px; line-height: 1.6; color: ${T.encre}; margin: 12px 0 0; }
 .reglage-actions { display: flex; gap: 8px; margin-top: 16px; }
 .reglage-actions .secondaire { flex: 1; padding: 10px; font-size: 13.5px; }

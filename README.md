@@ -66,7 +66,8 @@ Tout tient dans `src/App.jsx` : les données pédagogiques (étapes, vocabulaire
 | Contenu de la section Comprendre | `THEORIE` |
 | Mots déclenchant la proposition d'auto-empathie | `MOTS_JUGEMENT`, `FAUX_SENTIMENTS`, `SENTIMENTS_INTENSES` |
 | Couleurs et teintes | `T` et `ORIENTATIONS` |
-| Mentions légales, confidentialité, propriété | composant `Reglages` |
+| Mentions légales, confidentialité, propriété | composant `Reglages` et composant `Mentions` |
+| Nom, SIRET, adresse de contact, date de mise à jour | constantes en haut de `App.jsx` |
 
 ## Limites connues
 
@@ -75,5 +76,8 @@ Tout tient dans `src/App.jsx` : les données pédagogiques (étapes, vocabulaire
 - La proposition de détour par l'auto-empathie repose sur un curseur d'intensité et un repérage de mots-clés. C'est volontairement simple, et donc faillible.
 
 ## Mentions
+
+Éditée par Romane Carduner — entrepreneure individuelle, SIRET 844 603 142 00028.
+Contact : contact@romanecarduner-psychologue.fr
 
 La Communication NonViolente a été élaborée par Marshall Rosenberg. Cette application n'est ni certifiée, ni affiliée au Center for Nonviolent Communication ni à aucune association de CNV, et ne remplace pas une formation.
